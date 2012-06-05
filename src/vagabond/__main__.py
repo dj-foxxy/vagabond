@@ -4,7 +4,7 @@ from __future__ import print_function
 from argparse import ArgumentParser
 import sys
 
-from vagabond import Book
+from vagabond import Accounts
 
 def create_argument_parser():
     argument_parser = ArgumentParser()
@@ -18,17 +18,17 @@ def main(argv=None):
         argv = sys.argv
     args = create_argument_parser().parse_args(args=argv[1:])
 
-    book = Book()
+    accounts = Accounts()
 
     if args.import_iom:
-        book.import_iom(args.import_iom)
+        accounts.import_iom(args.import_iom)
 
-    print('Savings: %.2f' % book.get_balance())
-    print('Predict broke date: %s' % book.predict_broken_date()[0])
+    print('Savings: %.2f' % accounts.get_balance())
+    print('Predict broke date: %s' % accounts.predict_broken_date()[0])
 
     if args.plot:
         from vagabond.plot import plot
-        plot(book)
+        plot(accounts)
 
     return 0
 

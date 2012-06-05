@@ -5,7 +5,6 @@ from argparse import ArgumentParser
 from datetime import datetime
 from itertools import groupby
 import csv
-import sys
 import time
 
 import numpy
@@ -72,22 +71,6 @@ class Accounts(object):
             self.accounts_lookup[account.name] = account
         return account
 
-
-class Book(object):
-    def __init__(self):
-        self.accounts = Accounts()
-
-    def predict_broken_date(self):
-        data = self.get_balance_data()
-        for i, (date, running_balance) in enumerate(data):
-            data[i][0] = time.mktime(date.timetuple())
-        data = numpy.array(data)
-        m, c = numpy.polyfit(data[:,0], data[:,1], 1)
-        return datetime.fromtimestamp(-c / m), m, c
-
-    def get_balance(self):
-        return self.get_balance_data()[-1][1]
-
     def get_balance_data(self):
         balance = sum(acc.initial_amount for acc in self.accounts)
         trans = []
@@ -99,6 +82,17 @@ class Book(object):
             balance += sum(tran.amount for tran in trans_on_date)
             running_balance.append([date, balance])
         return running_balance
+
+    def predict_broken_date(self):
+        data = self.get_balance_data()
+        for i, (date, running_balance) in enumerate(data):
+            data[i][0] = time.mktime(date.timetuple())
+        data = numpy.array(data)
+        m, c = numpy.polyfit(data[:,0], data[:,1], 1)
+        return datetime.fromtimestamp(-c / m), m, c
+
+    def get_balance(self):
+        return self.get_balance_data()[-1][1]
 
     def import_iom(self, path):
         trans = {}
@@ -122,7 +116,7 @@ class Book(object):
             if account_num in self.accounts:
                 account = self.accounts[account_num]
             else:
-                account = self.accounts.create(
+                account = self.create(
                         account_num, initial_amount=ts[0][4], name=ts[0][5])
             for t in ts:
                 account.add_trans(t[3], t[0], t[2])
