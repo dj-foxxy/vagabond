@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -129,49 +128,4 @@ class Book(object):
                 account.add_trans(t[3], t[0], t[2])
 
 
-def plot(book):
-    from matplotlib import dates
-    from matplotlib import rc
-    from matplotlib import pyplot
-    rc('font', family='serif')
-    rc('text', usetex=True)
-    data = numpy.array(book.get_balance_data())
-    fig = pyplot.figure()
-    plot = fig.add_subplot(111)
-    plot.plot_date(data[:,0], data[:,1], drawstyle='steps-mid', fmt='b-')
-    plot.xaxis.set_major_locator(dates.MonthLocator())
-    plot.xaxis.set_major_formatter(dates.DateFormatter('%b'))
-    plot.grid(True)
-    plot.set_title('Savings over time')
-    plot.set_xlabel('Date')
-    plot.set_ylabel(r'Savings (\textsterling)')
-    pyplot.show()
-
-def create_argument_parser():
-    argument_parser = ArgumentParser()
-    add = argument_parser.add_argument
-    add('-i', '--import-iom')
-    add('-p', '--plot', action='store_true', default=False)
-    return argument_parser
-
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv
-    args = create_argument_parser().parse_args(args=argv[1:])
-
-    book = Book()
-
-    if args.import_iom:
-        book.import_iom(args.import_iom)
-
-    print('Savings: %.2f' % book.get_balance())
-    print('Predict broke date: %s' % book.predict_broken_date()[0])
-
-    if args.plot:
-        plot(book)
-
-    return 0
-
-if __name__ == '__main__':
-    exit(main())
 
