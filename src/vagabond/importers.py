@@ -34,5 +34,34 @@ def import_iom(accounts, path):
             account.add_trans(t[3], t[0], t[2])
 
 def import_santander(accounts, path):
-    pass
+    trans = []
+
+    with open(path) as satander_file:
+        for index in xrange(2):
+            next(satander_file)
+        account_num = next(satander_file).split()[-1]
+        for index, line in enumerate(satander_file):
+            field_index = index % 5
+            if field_index == 0:
+                if index > 0:
+                    trans.append((date, balance, desc, amount))
+                continue
+            field = line.split(':')[1].split('\xa0')[1].strip()
+            if field_index == 1:
+                date = datetime.strptime(field, '%d/%m/%Y')
+            elif field_index == 2:
+                desc = field
+            elif field_index == 3:
+                amount = float(field)
+            elif field_index == 4:
+                balance = float(field)
+
+    trans.sort(key=lambda t: (t[0]))
+
+    if account_num in accounts:
+        account = accounts[account_num]
+    else:
+        account = accounts.create(account_num, initial_amount=trans[0][1])
+    for t in trans:
+        account.add_trans(t[3], t[0], t[2])
 

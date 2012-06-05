@@ -38,6 +38,7 @@ class Account(object):
 
 
 class Accounts(object):
+    DEF_FORGETTING_FACTOR = 0.95
     def __init__(self):
         self.accounts = set()
         self.accounts_lookup = {}
@@ -82,15 +83,19 @@ class Accounts(object):
             running_balance.append([date, balance])
         return running_balance
 
-    def compute_saving_line(self):
-        data = self.get_balance_data()
-        for i, (date, running_balance) in enumerate(data):
-            data[i][0] = time.mktime(date.timetuple())
-        data = numpy.array(data)
-        return numpy.polyfit(data[:,0], data[:,1], 1)
+    def compute_saving_line(self, forgetting_factor=DEF_FORGETTING_FACTOR):
+        data = numpy.matrix([(1, time.mktime(date.timetuple()), balance)
+                             for date, balance in self.get_balance_data()])
+        X = data[:,:2]
+        y = data[:,2]
+        ff = numpy.diag([forgetting_factor ** i
+                         for i in xrange(X.shape[0], 0,-1)])
+        print(X.shape, y.shape, ff.shape)
+        theta = X.T.dot(ff).dot(X).getI().dot(X.T).dot(ff).dot(y)
+        return theta[0,0], theta[1,0]
 
-    def predict_broken_date(self):
-        m, c = self.compute_saving_line()
+    def predict_broke_date(self, forgetting_factor=DEF_FORGETTING_FACTOR):
+        c, m = self.compute_saving_line(forgetting_factor=forgetting_factor)
         return datetime.fromtimestamp(-c / m)
 
     def get_balance(self):
