@@ -90,7 +90,6 @@ class Accounts(object):
         y = data[:,2]
         ff = numpy.diag([forgetting_factor ** i
                          for i in xrange(X.shape[0], 0,-1)])
-        print(X.shape, y.shape, ff.shape)
         theta = X.T.dot(ff).dot(X).getI().dot(X.T).dot(ff).dot(y)
         return theta[0,0], theta[1,0]
 

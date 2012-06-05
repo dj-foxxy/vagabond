@@ -28,7 +28,8 @@ def import_iom(accounts, path):
         if account_num in accounts:
             account = accounts[account_num]
         else:
-            account = accounts.create(account_num, initial_amount=ts[0][4],
+            account = accounts.create(account_num,
+                                      initial_amount=ts[0][4]-ts[0][3],
                                       name=ts[0][5])
         for t in ts:
             account.add_trans(t[3], t[0], t[2])
@@ -55,13 +56,15 @@ def import_santander(accounts, path):
                 amount = float(field)
             elif field_index == 4:
                 balance = float(field)
+        trans.append((date, balance, desc, amount))
 
-    trans.sort(key=lambda t: (t[0]))
+    trans.sort(key=lambda t: t[0])
 
     if account_num in accounts:
         account = accounts[account_num]
     else:
-        account = accounts.create(account_num, initial_amount=trans[0][1])
+        account = accounts.create(account_num,
+                                  initial_amount=trans[0][1] - trans[0][3])
     for t in trans:
         account.add_trans(t[3], t[0], t[2])
 
