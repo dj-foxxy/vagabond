@@ -33,3 +33,6 @@ def import_iom(accounts, path):
         for t in ts:
             account.add_trans(t[3], t[0], t[2])
 
+def import_santander(accounts, path):
+    pass
+

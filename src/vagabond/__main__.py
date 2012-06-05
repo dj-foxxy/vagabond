@@ -9,7 +9,8 @@ from vagabond import Accounts
 def create_argument_parser():
     argument_parser = ArgumentParser()
     add = argument_parser.add_argument
-    add('-i', '--import-iom')
+    add('-ii', '--import-iom')
+    add('-is', '--import-santander')
     add('-p', '--plot', action='store_true', default=False)
     return argument_parser
 
@@ -23,6 +24,10 @@ def main(argv=None):
     if args.import_iom:
         from vagabond.importers import import_iom
         import_iom(accounts, args.import_iom)
+
+    if args.import_santander:
+        from vagabond.importers import import_santander
+        import_santander(accounts, args.import_santander)
 
     print('Savings: %.2f' % accounts.get_balance())
     print('Predict broke date: %s' % accounts.predict_broken_date()[0])
