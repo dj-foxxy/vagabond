@@ -82,13 +82,16 @@ class Accounts(object):
             running_balance.append([date, balance])
         return running_balance
 
-    def predict_broken_date(self):
+    def compute_saving_line(self):
         data = self.get_balance_data()
         for i, (date, running_balance) in enumerate(data):
             data[i][0] = time.mktime(date.timetuple())
         data = numpy.array(data)
-        m, c = numpy.polyfit(data[:,0], data[:,1], 1)
-        return datetime.fromtimestamp(-c / m), m, c
+        return numpy.polyfit(data[:,0], data[:,1], 1)
+
+    def predict_broken_date(self):
+        m, c = self.compute_saving_line()
+        return datetime.fromtimestamp(-c / m)
 
     def get_balance(self):
         return self.get_balance_data()[-1][1]

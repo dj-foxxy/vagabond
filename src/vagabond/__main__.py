@@ -30,7 +30,7 @@ def main(argv=None):
         import_santander(accounts, args.import_santander)
 
     print('Savings: %.2f' % accounts.get_balance())
-    print('Predict broke date: %s' % accounts.predict_broken_date()[0])
+    print('Predict broke date: %s' % accounts.predict_broken_date())
 
     if args.plot:
         from vagabond.plot import plot
