@@ -21,7 +21,8 @@ def main(argv=None):
     accounts = Accounts()
 
     if args.import_iom:
-        accounts.import_iom(args.import_iom)
+        from vagabond.importers import import_iom
+        import_iom(accounts, args.import_iom)
 
     print('Savings: %.2f' % accounts.get_balance())
     print('Predict broke date: %s' % accounts.predict_broken_date()[0])
