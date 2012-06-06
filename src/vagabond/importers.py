@@ -9,7 +9,7 @@ def import_iom(accounts, path):
 
     with open(path) as trans_file:
         for tran in filter(None, csv.reader(trans_file))[1:]:
-            date = datetime.strptime(tran[0], '%d/%m/%Y')
+            date = datetime.strptime(tran[0], '%d/%m/%Y').date()
             trans_type = tran[1]
             desc = tran[2][1:]
             amount = float(tran[3])
@@ -49,7 +49,7 @@ def import_santander(accounts, path):
                 continue
             field = line.split(':')[1].split('\xa0')[1].strip()
             if field_index == 1:
-                date = datetime.strptime(field, '%d/%m/%Y')
+                date = datetime.strptime(field, '%d/%m/%Y').date()
             elif field_index == 2:
                 desc = field
             elif field_index == 3:

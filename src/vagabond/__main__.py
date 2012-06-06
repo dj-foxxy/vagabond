@@ -33,6 +33,8 @@ def main(argv=None):
         for path in args.import_santander:
             import_santander(accounts, path)
 
+    print(accounts.csv_to_file('test.csv'));exit()
+
     print('Savings: %.2f' % accounts.get_balance())
     print('Predict broke date: %s' %
             accounts.predict_broke_date(

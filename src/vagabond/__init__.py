@@ -22,6 +22,9 @@ class Transaction(object):
         return '(%s)' % (','.join(map(str, (self.date, self.desc, self.amount,
                                             self.account.name))),)
 
+    def csv(self):
+        return (self.account.number, self.amount, self.date, self.desc)
+
 
 class Account(object):
     def __init__(self, number, initial_amount=0, name=None):
@@ -35,6 +38,12 @@ class Account(object):
 
     def add_trans(self, amount, date, desc):
         self.trans.append(Transaction(self, amount, date, desc))
+
+    def csv_account(self):
+        return (self.number, self.name, self.initial_amount)
+
+    def csv_trans(self):
+        return [tran.csv() for tran in self.trans]
 
 
 class Accounts(object):
@@ -70,6 +79,18 @@ class Accounts(object):
                                  % (account.name,))
             self.accounts_lookup[account.name] = account
         return account
+
+    def csv(self):
+        return [('accounts',)] \
+                + [account.csv_account() for account in self.accounts] \
+                + [('transactions',)] \
+                + reduce(lambda x, y: x.extend(y),
+                         (account.csv_trans() for account in self.accounts))
+
+    def csv_to_file(self, path):
+        rows = self.csv()
+        with open(path, 'w') as csv_file:
+            csv.writer(csv_file).writerows(rows)
 
     def get_balance_data(self):
         balance = sum(acc.initial_amount for acc in self.accounts)
