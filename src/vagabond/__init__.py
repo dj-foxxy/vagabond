@@ -14,9 +14,9 @@ UTILITIES = 'utilities'
 INSURANCE = 'insurance'
 LIVING = 'living'
 COMMS = 'comms'
-VECH_TAX = 'vech_tax'
-VECH_INSURANCE = 'vech_insurance'
-VECH_COSTS = 'vech_costs'
+VEHC_TAX = 'vehc_tax'
+VEHC_INSURANCE = 'vehc_insurance'
+VEHC_COSTS = 'vehc_costs'
 HP_REPAYMENT = 'hp_repayment'
 HIRE = 'hire'
 SUBSCRIPTIONS = 'subscriptions'
@@ -26,7 +26,7 @@ NI = 'ni'
 FDS = 'fds'
 
 CATEGORIES = {RENT, COUNCIL_TAX, UTILITIES, INSURANCE, LIVING, INSURANCE,
-              LIVING, COMMS, VECH_TAX, VECH_INSURANCE, VECH_COSTS, HP_REPAYMENT,
+              LIVING, COMMS, VEHC_TAX, VEHC_INSURANCE, VEHC_COSTS, HP_REPAYMENT,
               HIRE, SUBSCRIPTIONS, CONTINGENCIES, TAX, NI, FDS}
 
 class Transaction(object):
