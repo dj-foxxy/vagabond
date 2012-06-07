@@ -48,6 +48,7 @@ class Account(object):
 
 class Accounts(object):
     DEF_FORGETTING_FACTOR = 0.95
+
     def __init__(self):
         self.accounts = set()
         self.accounts_lookup = {}
@@ -120,5 +121,27 @@ class Accounts(object):
 
     def get_balance(self):
         return self.get_balance_data()[-1][1]
+
+
+    @classmethod
+    def from_csv(cls, path):
+        accounts = cls()
+        with open(path) as csv_file:
+            for row in csv.reader(csv_file):
+                if len(row) == 1:
+                    if row[0] == 'accounts':
+                        state = 1
+                    elif row[0] == 'transactions':
+                        state = 2
+                    else:
+                        raise ValueError('Illegal format: %r' % (row,))
+                elif state == 1:
+                    accounts.create(row[0], initial_amount=float(row[2]),
+                                    name=row[1])
+                elif state == 2:
+                    account = accounts[row[0]]
+                    date = datetime.strptime(row[2], '%Y-%m-%d').date()
+                    account.add_trans(float(row[1]), date, row[3])
+        return accounts
 
 
