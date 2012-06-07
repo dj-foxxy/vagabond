@@ -30,7 +30,9 @@ def categorise(accounts):
 
             while True:
                 try:
-                    cat = CATEGORIES[int(raw_input('Category: ')) - 1]
+                    response = raw_input('Category: ')
+                    if response:
+                        trans.category = CATEGORIES[int(response) - 1]
                 except KeyboardInterrupt:
                     print('\nStopping.')
                     return
@@ -39,5 +41,4 @@ def categorise(accounts):
                 else:
                     break
 
-            trans.category = cat
 
