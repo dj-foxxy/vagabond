@@ -10,8 +10,10 @@ from vagabond import Accounts
 def create_argument_parser():
     argument_parser = ArgumentParser()
     add = argument_parser.add_argument
+    add('-c', '--categorise', action='store_true', default=False)
     add('--create', action='store_true', default=False)
     add('-d', '--dry-run', action='store_true', default=False)
+    add('-f', '--forcast', action='store_true', default=False)
     add('-ff', '--forgetting-factor', type=float,
             default=Accounts.DEF_FORGETTING_FACTOR)
     add('-ii', '--import-iom', nargs='+')
@@ -40,13 +42,19 @@ def main(argv=None):
         for path in args.import_santander:
             import_santander(accounts, path)
 
-    print('Savings: %.2f' % accounts.get_balance())
-    print('Predict broke date: %s' % accounts.predict_broke_date(
-            forgetting_factor=args.forgetting_factor))
+    if args.categorise:
+        from vagabond.categorise import categorise
+        categorise(accounts)
+
 
     if args.plot:
         from vagabond.plot import plot
         plot(accounts, forgetting_factor=args.forgetting_factor)
+
+    if args.forcast:
+        print('Savings: %.2f' % accounts.get_balance())
+        print('Predict broke date: %s' % accounts.predict_broke_date(
+                forgetting_factor=args.forgetting_factor))
 
     if not args.dry_run:
         accounts.csv_to_file(args.csv)
