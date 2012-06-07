@@ -9,21 +9,24 @@ import time
 import numpy
 
 class Transaction(object):
-    def __init__(self, account, amount, date, desc):
+    def __init__(self, account, amount, date, desc, category=None):
         self.account = account
         self.amount = amount
         self.date = date
         self.desc = desc
+        self.category = category
 
     def __repr__(self):
         return str(self)
 
     def __str__(self):
-        return '(%s)' % (','.join(map(str, (self.date, self.desc, self.amount,
-                                            self.account.name))),)
+        return '(%s)' % (','.join(
+                map(str, (self.date, self.desc, self.amount, self.account.name,
+                          self.category))),)
 
     def csv(self):
-        return (self.account.number, self.amount, self.date, self.desc)
+        return (self.account.number, self.amount, self.date, self.desc,
+                self.category)
 
 
 class Account(object):
@@ -36,8 +39,8 @@ class Account(object):
     def __str__(self):
         return 'Account[%s]{%s}' % (self.name, ','.join(map(str, self.trans)))
 
-    def add_trans(self, amount, date, desc):
-        self.trans.append(Transaction(self, amount, date, desc))
+    def add_trans(self, *args, **kwargs):
+        self.trans.append(Transaction(self, *args, **kwargs))
 
     def csv_account(self):
         return (self.number, self.name, self.initial_amount)
@@ -82,11 +85,13 @@ class Accounts(object):
         return account
 
     def csv(self):
+        trans = []
+        for account in self.accounts:
+            trans.extend(account.csv_trans())
         return [('accounts',)] \
                 + [account.csv_account() for account in self.accounts] \
                 + [('transactions',)] \
-                + reduce(lambda x, y: x.extend(y),
-                         (account.csv_trans() for account in self.accounts))
+                + trans
 
     def csv_to_file(self, path):
         rows = self.csv()
@@ -122,7 +127,6 @@ class Accounts(object):
     def get_balance(self):
         return self.get_balance_data()[-1][1]
 
-
     @classmethod
     def from_csv(cls, path):
         accounts = cls()
@@ -141,7 +145,9 @@ class Accounts(object):
                 elif state == 2:
                     account = accounts[row[0]]
                     date = datetime.strptime(row[2], '%Y-%m-%d').date()
-                    account.add_trans(float(row[1]), date, row[3])
+                    category = row[4] if row[4] else None
+                    account.add_trans(float(row[1]), date, row[3],
+                                      category=category)
         return accounts
 
 
