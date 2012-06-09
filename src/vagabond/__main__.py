@@ -1,11 +1,15 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+
 from argparse import ArgumentParser
+import logging
 import os
 import sys
 
 from vagabond import Accounts
+
+DEF_LOG_LEVEL = 'INFO'
 
 def create_argument_parser():
     argument_parser = ArgumentParser()
@@ -18,6 +22,7 @@ def create_argument_parser():
             default=Accounts.DEF_FORGETTING_FACTOR)
     add('-ii', '--import-iom', nargs='+')
     add('-is', '--import-santander', nargs='+')
+    add('-l', '--log-level', default=DEF_LOG_LEVEL)
     add('-p', '--plot', action='store_true', default=False)
     add('csv')
     return argument_parser
@@ -26,6 +31,12 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     args = create_argument_parser().parse_args(args=argv[1:])
+
+    log_numeric_level = getattr(logging, args.log_level.upper(), None)
+    if not isinstance(log_numeric_level, int):
+        raise ValueError('Invalid log level %s', args.log_level)
+    logging.basicConfig(format='%(levelname)s: %(asctime)s: %(message)s',
+                        level=log_numeric_level)
 
     if not args.create and os.path.isfile(args.csv):
         accounts = Accounts.from_csv(args.csv)

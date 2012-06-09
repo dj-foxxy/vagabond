@@ -8,27 +8,6 @@ import time
 
 import numpy
 
-RENT = 'rent'
-COUNCIL_TAX = 'council_tax'
-UTILITIES = 'utilities'
-INSURANCE = 'insurance'
-LIVING = 'living'
-COMMS = 'comms'
-VEHC_TAX = 'vehc_tax'
-VEHC_INSURANCE = 'vehc_insurance'
-VEHC_COSTS = 'vehc_costs'
-HP_REPAYMENT = 'hp_repayment'
-HIRE = 'hire'
-SUBSCRIPTIONS = 'subscriptions'
-CONTINGENCIES = 'contingenies'
-TAX = 'tax'
-NI = 'ni'
-FDS = 'fds'
-
-CATEGORIES = {RENT, COUNCIL_TAX, UTILITIES, INSURANCE, LIVING, INSURANCE,
-              LIVING, COMMS, VEHC_TAX, VEHC_INSURANCE, VEHC_COSTS, HP_REPAYMENT,
-              HIRE, SUBSCRIPTIONS, CONTINGENCIES, TAX, NI, FDS}
-
 class Transaction(object):
     def __init__(self, account, amount, date, desc, category=None):
         self.account = account
