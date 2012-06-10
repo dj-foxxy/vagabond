@@ -4,14 +4,18 @@ from __future__ import print_function
 
 CATEGORIES = {
     'ATM',
+    'Charity',
     'Council tax',
     'Eating out',
     'Education',
+    'Entertainment',
+    'Fashion',
     'Foxdog Studios',
     'Gifts',
     'Going out',
     'Groceries',
     'Income tax',
+    'Household',
     'Interest',
     'Living',
     'National insurance',

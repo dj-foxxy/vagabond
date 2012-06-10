@@ -53,6 +53,7 @@ def categorise(accounts):
                     if response:
                         if response == REFRESH_KEY:
                             classifier = create_classifier(accounts)
+                            print(classifier)
                             continue
                         elif response == SKIP_KEY:
                             break
@@ -79,6 +80,8 @@ def create_classifier(accounts):
             for word in words:
                 dictionary.add(word)
             training_examples.append((trans.category, words))
+    if '' in dictionary:
+        dictionary.remove('')
     return BagOfWords(CATEGORIES, dictionary, training_examples,
-                      smoothing=1)
+                      smoothing=0.1)
 
